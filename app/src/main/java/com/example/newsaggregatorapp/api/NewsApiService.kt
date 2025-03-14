@@ -10,4 +10,10 @@ interface NewsApiService {
         @Query("country") country: String = "us",
         @Query("apiKey") apiKey: String
     ): NewsResponse
+
+    @GET("everything")
+    suspend fun searchArticles(
+        @Query("q") query: String,
+        @Query("apiKey") apiKey: String
+    ): NewsResponse
 }

@@ -7,12 +7,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.newsaggregatorapp.screens.ArticleScreen
 import com.example.newsaggregatorapp.screens.HomeScreen
+import com.example.newsaggregatorapp.screens.SearchScreen
 import com.example.newsaggregatorapp.screens.SettingsScreen
 
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
     object Settings : Screen("settings")
+    object Search : Screen("search")
     object Article : Screen("article?articleUrl={articleUrl}") {
         fun createRoute(articleUrl: String): String {
             return "article?articleUrl=${Uri.encode(articleUrl)}"
@@ -31,6 +33,7 @@ fun AppNavigation(navController: NavHostController){
         }
 
         composable(Screen.Settings.route){ SettingsScreen(navController) }
+        composable(Screen.Search.route) { SearchScreen(navController) }
 
     }
 }
