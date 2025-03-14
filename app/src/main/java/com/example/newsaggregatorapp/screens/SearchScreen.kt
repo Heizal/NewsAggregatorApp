@@ -18,16 +18,17 @@ import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel = viewModel()) {
+fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel = viewModel(), bookmarkViewModel: BookmarkViewModel = viewModel()) {
     val context = LocalContext.current
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     val searchResults by searchViewModel.searchResults.collectAsState()
     val recentSearches by searchViewModel.recentSearches.collectAsState()
-    val keyboardController = LocalSoftwareKeyboardController.current // ✅ Hide keyboard on submit
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Scaffold(
         topBar = {
@@ -68,7 +69,7 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                         if (searchQuery.text.isNotEmpty()) {
                             searchViewModel.searchNews(searchQuery.text)
                             searchViewModel.addRecentSearch(searchQuery.text)
-                            keyboardController?.hide() // ✅ Hide keyboard after search
+                            keyboardController?.hide()
                         }
                     }
                 )
@@ -102,7 +103,7 @@ fun SearchScreen(navController: NavController, searchViewModel: SearchViewModel 
                 Text("Search Results", style = MaterialTheme.typography.titleMedium)
                 LazyColumn {
                     items(searchResults) { article ->
-                        NewsItem(article, navController)
+                        NewsItem(article, bookmarkViewModel)
                     }
                 }
             }
