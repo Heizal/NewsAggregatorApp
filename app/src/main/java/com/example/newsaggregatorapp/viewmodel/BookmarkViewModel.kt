@@ -3,32 +3,48 @@ package com.example.newsaggregatorapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsaggregatorapp.models.Article
+import com.example.newsaggregatorapp.database.BookmarkDatabase
+import com.example.newsaggregatorapp.models.ArticleEntity
+import com.example.newsaggregatorapp.repository.BookmarkRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class BookmarkViewModel (application: Application) : AndroidViewModel(application) {
-    private val _bookmarks = MutableStateFlow<List<Article>>(emptyList())
-    val bookmarks: StateFlow<List<Article>> = _bookmarks
+    private val repository: BookmarkRepository
 
-    //Add bookmark
-    fun addBookmark(article: Article){
+    private val _bookmarks = MutableStateFlow<List<ArticleEntity>>(emptyList())
+    val bookmarks: StateFlow<List<ArticleEntity>> = _bookmarks.asStateFlow()
+
+    init {
+        val dao = BookmarkDatabase.getDatabase(application).bookmarkDao()
+        repository = BookmarkRepository(dao)
+
         viewModelScope.launch {
-            val updatedList = bookmarks.value.toMutableList()
-            if (!updatedList.contains(article)){
-                updatedList.add(article)
-                _bookmarks.value = updatedList
+            repository.allBookmarks.collect{ bookmarkedArticles: List<ArticleEntity> ->
+                _bookmarks.value = bookmarkedArticles
+
             }
         }
     }
 
-    //Remove bookmark
-    fun removeBookmark(article: Article){
+    //Add bookmark
+    fun addBookmark(article: ArticleEntity){
         viewModelScope.launch {
-            val updatedList = bookmarks.value.toMutableList()
-            updatedList.remove(article)
-            _bookmarks.value = updatedList
+            repository.addBookmark(article)
         }
+    }
+
+    //Remove bookmark
+    fun removeBookmark(article: ArticleEntity){
+        viewModelScope.launch {
+            repository.removeBookmark(article)
+        }
+    }
+
+    fun isBookmarked(article: ArticleEntity): Boolean {
+        return _bookmarks.value.any { it.title == article.title }
     }
 }

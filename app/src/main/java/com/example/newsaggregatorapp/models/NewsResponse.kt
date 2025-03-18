@@ -1,12 +1,28 @@
 package com.example.newsaggregatorapp.models
 
+import androidx.annotation.NonNull
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 data class NewsResponse(
-    val articles: List<Article>
+    val articles: List<ArticleEntity>
 )
 
-data class Article(
-    val title: String,
-    val description: String,
-    val url: String,
-    val urlToImage: String
-)
+@Entity(tableName = "bookmarked_articles")
+data class ArticleEntity(
+    @PrimaryKey val title: String,
+    val author: String?,
+    val url: String?,
+    val urlToImage: String?,
+    val publishedAt: String?
+) {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is ArticleEntity) return false
+            return title == other.title
+        }
+
+        override fun hashCode(): Int {
+            return title.hashCode()
+        }
+    }

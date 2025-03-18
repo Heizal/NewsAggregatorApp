@@ -5,15 +5,15 @@ import android.content.Context
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsaggregatorapp.models.Article
+import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.service.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class SearchViewModel(application: Application) : AndroidViewModel(application) {
-    private val _searchResults = MutableStateFlow<List<Article>>(emptyList())
-    val searchResults: StateFlow<List<Article>> = _searchResults
+    private val _searchResults = MutableStateFlow<List<ArticleEntity>>(emptyList())
+    val searchResults: StateFlow<List<ArticleEntity>> = _searchResults
 
     private val _recentSearches = MutableStateFlow<List<String>>(emptyList())
     val recentSearches: StateFlow<List<String>> = _recentSearches

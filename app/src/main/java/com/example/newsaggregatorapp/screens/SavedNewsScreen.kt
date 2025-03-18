@@ -44,6 +44,7 @@ fun SavedNewsScreen(navController: NavController, bookmarkViewModel: BookmarkVie
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
+            println("Saved Articles Count: ${savedArticles.size}")
             if (savedArticles.isEmpty()) {
                 Text("No saved articles.", style = MaterialTheme.typography.bodyLarge)
             } else {
