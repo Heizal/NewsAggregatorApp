@@ -1,5 +1,7 @@
 package com.example.newsaggregatorapp.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -38,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -95,6 +98,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
 
 @Composable
 fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
+    val context = LocalContext.current
     val bookmarkedArticles by bookmarkViewModel.bookmarks.collectAsState()
     val isBookmarked = bookmarkedArticles.any { it.title == article.title }
 
@@ -103,7 +107,12 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable { /* Open in browser */ },
+            .clickable {
+                       article.url?.let { url ->
+                           val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                           context.startActivity(intent)
+                       }
+            },
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row (modifier = Modifier.padding(12.dp),
