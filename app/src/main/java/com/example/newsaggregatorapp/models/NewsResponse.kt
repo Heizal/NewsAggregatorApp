@@ -14,7 +14,8 @@ data class ArticleEntity(
     val author: String?,
     val url: String?,
     val urlToImage: String?,
-    val publishedAt: String?
+    val publishedAt: String?,
+    val category: String?
 ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

@@ -16,20 +16,36 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val apiService = RetrofitInstance.getApiService(application)
     private val apiKey = RetrofitInstance.getApiKey()
 
+    var selectedCategory = MutableStateFlow("general")
+
     init {
-        fetchNews()
+        fetchNews("general")
     }
 
-   fun fetchNews() {
+   fun fetchNews(category: String) {
         viewModelScope.launch {
             try {
-                val response = apiService.getTopHeadlines(apiKey = apiKey)
-                _news.value = response.articles
+                val response = apiService.getTopHeadlines(category = category, apiKey = apiKey)
+                _news.value = response.articles.map{
+                    ArticleEntity(
+                        title = it.title ?: "No Title",
+                        author = it.author ?: "Unknown",
+                        publishedAt = it.publishedAt ?: "",
+                        url = it.url,
+                        urlToImage = it.urlToImage,
+                        category = category
+                    )
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
    }
+
+    fun setCategory(category: String){
+        selectedCategory.value = category
+        fetchNews(category)
+    }
 
     fun searchNews(query: String){
         viewModelScope.launch {

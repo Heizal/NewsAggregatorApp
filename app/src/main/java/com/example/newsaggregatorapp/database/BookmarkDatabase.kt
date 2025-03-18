@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.newsaggregatorapp.models.ArticleEntity
 
-@Database(entities = [ArticleEntity::class], version = 1, exportSchema = false)
+@Database(entities = [ArticleEntity::class], version = 2, exportSchema = false)
 abstract class BookmarkDatabase : RoomDatabase(){
     abstract fun bookmarkDao(): BookmarkDao
 
