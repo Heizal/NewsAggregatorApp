@@ -5,11 +5,14 @@ import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,10 +29,12 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -37,6 +42,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -48,6 +54,8 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsaggregatorapp.R
 import com.example.newsaggregatorapp.models.ArticleEntity
+import com.example.newsaggregatorapp.ui.theme.CardBackground
+import com.example.newsaggregatorapp.ui.theme.SeparatorColor
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.HomeViewModel
 import java.time.Duration
@@ -75,15 +83,9 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
             )
         },
         bottomBar = {
-            BottomAppBar {
-                IconButton(onClick = { navController.navigate("home") }) {
-                    Icon(imageVector = Icons.Default.Home, contentDescription = "Home")
-                }
-                Spacer(modifier = Modifier.weight(1f))
-                IconButton(onClick = { navController.navigate("saved_news") }) {
-                    Icon(imageVector = Icons.Default.Bookmark, contentDescription = "Saved News")
-                }
-            }
+            val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "home"
+
+            CustomBottomBar(navController = navController, selectedRoute = currentRoute)
         }
 
     )
@@ -101,23 +103,26 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
             LazyRow(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+                    .padding(vertical = 12.dp),
+                contentPadding = PaddingValues(horizontal = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(categories) { category ->
                     val isSelected = category.lowercase() == selectedCategory.lowercase()
-                    Text(
-                        text = category.replaceFirstChar { it.uppercase() },
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clickable { viewModel.setCategory(category.lowercase()) }
-                            .background(
-                                if (isSelected) Color.Red else Color.Gray,
-                                shape = RoundedCornerShape(8.dp)
-                            )
-                            .padding(10.dp),
-                        color = Color.White,
-                        style = MaterialTheme.typography.bodyMedium
-                    )
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = if (isSelected) Color.Red else Color.LightGray,
+                        modifier = Modifier.clickable { viewModel.setCategory(category.lowercase()) }
+                    ) {
+                        Text(
+                            text = category.replaceFirstChar { it.uppercase() },
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            color = Color.White,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+
+                    }
                 }
             }
             //News List
@@ -131,67 +136,75 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
 }
 
 @Composable
-fun LargeNewsItem(article: ArticleEntity, navController: NavController){
+fun LargeNewsItem(article: ArticleEntity, navController: NavController) {
     val context = LocalContext.current
     val firstAuthor = article.author?.split(",")?.firstOrNull()?.trim() ?: ""
+
     Card(
         shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .heightIn(min = 180.dp, max = 220.dp) // 👈 Limit height range
+            .padding(horizontal = 12.dp, vertical = 8.dp)
             .clickable {
                 article.url?.let { url ->
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 }
             },
-        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
+        colors = CardDefaults.cardColors(
+            containerColor = CardBackground // 👈 White background
+        ),
+        elevation = CardDefaults.cardElevation(6.dp)
     ) {
-        Column {
-            // 🖼️ Article Image
+        Row(modifier = Modifier.padding(12.dp)) {
+            // 🖼️ Left-aligned image (square thumbnail style)
             Image(
-                painter = rememberAsyncImagePainter(model = article.urlToImage ?: R.drawable.placeholder_background),
-                contentDescription = "Top News Image",
+                painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
+                contentDescription = "News Image",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
+                    .size(120.dp)
+                    .clip(RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
 
-            Column(modifier = Modifier.padding(16.dp)) {
-                // 🔥 Category Badge
-                Text(
-                    text = article.category?.replaceFirstChar {
-                        if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString()
-                    } ?: "General",
-                    color = Color.Red,
-                    style = MaterialTheme.typography.labelMedium,
-                    modifier = Modifier
-                        .background(Color(0xFFFFEBEE), shape = RoundedCornerShape(8.dp))
-                        .padding(horizontal = 8.dp, vertical = 4.dp)
-                )
+            Spacer(modifier = Modifier.width(12.dp))
 
-                Spacer(modifier = Modifier.height(8.dp))
+            // 📰 Content Column
+            Column(modifier = Modifier.weight(1f)) {
+                // 🔥 Category
+                article.category?.let { category ->
+                    Text(
+                        text = category.replaceFirstChar { it.uppercase() },
+                        color = Color.Red,
+                        style = MaterialTheme.typography.labelMedium,
+                        modifier = Modifier
+                            .background(Color(0xFFFFE0E0), RoundedCornerShape(4.dp))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    )
+                }
 
-                // 📰 Article Title
+                Spacer(modifier = Modifier.height(4.dp))
+
+                // Title
                 Text(
                     text = article.title ?: "No Title",
-                    style = MaterialTheme.typography.headlineSmall,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
+                    style = MaterialTheme.typography.titleMedium,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-                // ✍️ Author & ⏰ Published Time
-                if (firstAuthor.isNotEmpty()){
+                // Author + Time
+                if (firstAuthor.isNotEmpty()) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = firstAuthor,
                             style = MaterialTheme.typography.bodySmall,
                             color = Color.Gray
                         )
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Spacer(modifier = Modifier.width(6.dp))
                         Text(
                             text = getTimeAgo(article.publishedAt),
                             style = MaterialTheme.typography.bodySmall,
@@ -231,27 +244,32 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
     val firstAuthor = article.author?.split(",")?.firstOrNull()?.trim() ?: ""
 
     Card(
-        shape = RoundedCornerShape(12.dp),
+        shape = RoundedCornerShape(16.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable {
                 article.url?.let { url ->
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 }
             },
+        colors = CardDefaults.cardColors(
+            containerColor = CardBackground
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
-        Row (modifier = Modifier.padding(12.dp),
+        Row (modifier = Modifier
+            .fillMaxWidth()
+            .padding(12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Article Image
         Image(painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
                 contentDescription = "Article Image",
                 modifier = Modifier
-                    .size(100.dp)
-                    .padding(4.dp),
+                    .size(80.dp)
+                    .background(Color.LightGray, RoundedCornerShape(12.dp)),
                 contentScale = ContentScale.Crop
             )
 
@@ -262,24 +280,33 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
                 // 📰 Title
                 Text(
                     text = article.title ?: "No Title",
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
-
                 // ✍️ Author & 📆 Date
-                if (firstAuthor.isNotEmpty()){
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                Row (
+                    verticalAlignment = Alignment.CenterVertically
+
+                ) {
+                    if (firstAuthor.isNotEmpty()) {
                         Text(
                             text = firstAuthor,
-                            style = MaterialTheme.typography.bodySmall
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color.Gray
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                     }
 
+                    Text(
+                        text = getTimeAgo(article.publishedAt),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
                 }
+
             }
 
             // 🔖 Bookmark Button
@@ -301,6 +328,12 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
                 )
             }
         }
+        // ➖ Separator line
+        HorizontalDivider(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            thickness = 1.dp,
+            color = SeparatorColor
+        )
     }
 }
 

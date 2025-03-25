@@ -33,7 +33,7 @@ fun NewsAppTheme(darkTheme: Boolean = false, content: @Composable () -> Unit) {
 
     MaterialTheme(
         colorScheme = colors,
-        typography = Typography,
+        typography = CustomTypography,
         content = content
     )
 }
