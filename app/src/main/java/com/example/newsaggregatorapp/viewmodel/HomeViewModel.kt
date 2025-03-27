@@ -46,16 +46,4 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         selectedCategory.value = category
         fetchNews(category)
     }
-
-    fun searchNews(query: String){
-        viewModelScope.launch {
-            try {
-                val response = apiService.searchArticles(query = query, apiKey = apiKey)
-                _news.value = response.articles
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-    }
 }

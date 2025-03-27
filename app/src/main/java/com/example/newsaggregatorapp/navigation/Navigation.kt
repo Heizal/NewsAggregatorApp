@@ -7,14 +7,11 @@ import androidx.navigation.compose.composable
 import com.example.newsaggregatorapp.screens.HomeScreen
 import com.example.newsaggregatorapp.screens.SavedNewsScreen
 import com.example.newsaggregatorapp.screens.SearchScreen
-import com.example.newsaggregatorapp.screens.SettingsScreen
 
 
 sealed class Screen(val route: String) {
     object Home : Screen("home")
-    object Settings : Screen("settings")
     object Search : Screen("search")
-
     object SavedNews : Screen("saved_news")
 }
 
@@ -22,8 +19,9 @@ sealed class Screen(val route: String) {
 fun AppNavigation(navController: NavHostController){
     NavHost(navController, startDestination = Screen.Home.route){
         composable(Screen.Home.route){ HomeScreen(navController) }
-        composable(Screen.Settings.route){ SettingsScreen(navController) }
-        composable(Screen.Search.route) { SearchScreen(navController) }
+        composable(Screen.Search.route) { backStackEntry ->
+            SearchScreen(navController, backStackEntry)
+        }
         composable(Screen.SavedNews.route) { SavedNewsScreen(navController) }
 
     }
