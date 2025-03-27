@@ -3,13 +3,12 @@ package com.example.newsaggregatorapp.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.newsaggregatorapp.database.BookmarkDatabase
+import com.example.newsaggregatorapp.database.AppDatabase
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.repository.BookmarkRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class BookmarkViewModel (application: Application) : AndroidViewModel(application) {
@@ -19,7 +18,7 @@ class BookmarkViewModel (application: Application) : AndroidViewModel(applicatio
     val bookmarks: StateFlow<List<ArticleEntity>> = _bookmarks.asStateFlow()
 
     init {
-        val dao = BookmarkDatabase.getDatabase(application).bookmarkDao()
+        val dao = AppDatabase.getDatabase(application).bookmarkDao()
         repository = BookmarkRepository(dao)
 
         viewModelScope.launch {

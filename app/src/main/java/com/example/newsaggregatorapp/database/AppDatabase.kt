@@ -5,21 +5,27 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.newsaggregatorapp.models.ArticleEntity
+import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 
-@Database(entities = [ArticleEntity::class], version = 2, exportSchema = false)
-abstract class BookmarkDatabase : RoomDatabase(){
+@Database(
+    entities = [ArticleEntity::class, RecentlyReadArticleEntity::class],
+    version = 1,
+    exportSchema = false
+)
+abstract class AppDatabase : RoomDatabase(){
     abstract fun bookmarkDao(): BookmarkDao
+    abstract fun recentlyReadDao(): RecentlyReadDao
 
     companion object{
         @Volatile
-        private var INSTANCE: BookmarkDatabase? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): BookmarkDatabase{
+        fun getDatabase(context: Context): AppDatabase{
             return INSTANCE ?: synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    BookmarkDatabase::class.java,
-                    "bookmark_database"
+                    AppDatabase::class.java,
+                    "news_app_database"
                 ).fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
