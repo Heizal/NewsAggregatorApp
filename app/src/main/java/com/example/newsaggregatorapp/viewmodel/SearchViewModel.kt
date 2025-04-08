@@ -31,20 +31,33 @@ class SearchViewModel(
     //Fetch news based on user query
     fun searchNews(query: String) {
         viewModelScope.launch {
-            try {
-                val response = apiService.searchArticles(query = query, apiKey = apiKey)
-                _searchResults.value = response.articles
-                recentSearchRepo.addSearch(query)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            fetchArticles(query)
+            saveQueryToRecentSearches(query)
         }
     }
 
     //Store recent searches
     fun addRecentSearch(query: String) {
         viewModelScope.launch {
+            saveQueryToRecentSearches(query)
+        }
+    }
+
+    private suspend fun fetchArticles(query: String) {
+        try {
+            val response = apiService.searchArticles(query = query, apiKey = apiKey)
+            _searchResults.value = response.articles
+            savedStateHandle["searchResults"] = response.articles
+        } catch (e: Exception) {
+            println("❌ Error fetching articles for query '$query': ${e.message}")
+        }
+    }
+
+    private suspend fun saveQueryToRecentSearches(query: String) {
+        try {
             recentSearchRepo.addSearch(query)
+        } catch (e: Exception) {
+            println("❌ Error saving recent search: ${e.message}")
         }
     }
 }
