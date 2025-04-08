@@ -1,27 +1,14 @@
 package com.example.newsaggregatorapp.screens
 
 import android.app.Application
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -30,21 +17,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.components.NewsItem
+import com.example.newsaggregatorapp.components.RecentSearchesList
+import com.example.newsaggregatorapp.components.SearchBar
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModelFactory
+
 @Composable
 fun SearchScreen(
     navController: NavHostController,
@@ -66,7 +52,6 @@ fun SearchScreen(
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     val searchResults by searchViewModel.searchResults.collectAsState()
     val recentSearches by searchViewModel.recentSearches.collectAsState()
-    val keyboardController = LocalSoftwareKeyboardController.current
     val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "search"
 
     MainScaffold(
@@ -79,58 +64,27 @@ fun SearchScreen(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // 🔍 Search Bar
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = { searchQuery = it },
-                placeholder = { Text("Search for news...") },
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search Icon"
-                    )
-                },
-                modifier = Modifier.fillMaxWidth(),
-
-                // ✅ Fix: Set Enter Key to "Search"
-                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Search),
-
-                // ✅ Fix: Handle Search Button Press
-                keyboardActions = KeyboardActions(
-                    onSearch = {
-                        if (searchQuery.text.isNotEmpty()) {
-                            searchViewModel.searchNews(searchQuery.text)
-                            searchViewModel.addRecentSearch(searchQuery.text)
-                            keyboardController?.hide()
-                        }
-                    }
-                )
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // 🔄 Recent Searches
-            if (recentSearches.isNotEmpty()) {
-                Text("Recent Searches", style = MaterialTheme.typography.titleMedium)
-                LazyColumn {
-                    items(recentSearches) { query ->
-                        Text(
-                            text = query,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    searchQuery = TextFieldValue(query)
-                                    searchViewModel.searchNews(query)
-                                }
-                                .padding(8.dp)
-                        )
+            SearchBar(
+                query = searchQuery,
+                onQueryChange = { searchQuery = it },
+                onSearch = {
+                    if (searchQuery.text.isNotEmpty()) {
+                        searchViewModel.searchNews(searchQuery.text)
+                        searchViewModel.addRecentSearch(searchQuery.text)
                     }
                 }
-            }
-
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
-            // 📜 Search Results
+            RecentSearchesList(
+                recentSearches = recentSearches,
+                onSearchClick = { query ->
+                    searchQuery = TextFieldValue(query)
+                    searchViewModel.searchNews(query)
+                }
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (searchResults.isNotEmpty()) {
                 Text("Search Results", style = MaterialTheme.typography.titleMedium)
                 LazyColumn {
