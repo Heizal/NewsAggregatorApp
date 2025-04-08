@@ -1,5 +1,6 @@
 package com.example.newsaggregatorapp.screens
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.Image
@@ -49,6 +50,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsaggregatorapp.components.CategoryTabs
+import com.example.newsaggregatorapp.components.LargeNewsItem
 import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
@@ -90,7 +92,7 @@ fun HomeScreen(
             modifier = Modifier.padding(paddingValues)
         ) {
             if (newsState.isNotEmpty()) {
-                LargeNewsItem(newsState.first(), navController, recentlyReadViewModel)
+                LargeNewsItem(article = newsState.first(), recentlyReadViewModel = recentlyReadViewModel, navController = navController)
             }
 
             val categories = listOf("general", "business", "entertainment", "health", "science", "sports", "technology")
@@ -109,98 +111,7 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun LargeNewsItem(article: ArticleEntity, navController: NavController, recentlyReadViewModel: RecentlyReadViewModel) {
-    val context = LocalContext.current
-    val firstAuthor = article.author?.split(",")?.firstOrNull()?.trim() ?: ""
 
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 180.dp, max = 220.dp) // 👈 Limit height range
-            .padding(horizontal = 12.dp, vertical = 8.dp)
-            .clickable {
-                article.url?.let { url ->
-                    //Save to recently read
-                    recentlyReadViewModel.addToRecentlyRead(
-                        RecentlyReadArticleEntity(
-                            title = article.title ?: "No Title",
-                            author = article.author,
-                            url = article.url,
-                            urlToImage = article.urlToImage,
-                            publishedAt = article.publishedAt,
-                            category = article.category
-                        )
-                    )
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                }
-            },
-        colors = CardDefaults.cardColors(
-            containerColor = CardBackground // 👈 White background
-        ),
-        elevation = CardDefaults.cardElevation(6.dp)
-    ) {
-        Row(modifier = Modifier.padding(12.dp)) {
-            // 🖼️ Left-aligned image (square thumbnail style)
-            Image(
-                painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
-                contentDescription = "News Image",
-                modifier = Modifier
-                    .size(120.dp)
-                    .clip(RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // 📰 Content Column
-            Column(modifier = Modifier.weight(1f)) {
-                // 🔥 Category
-                article.category?.let { category ->
-                    Text(
-                        text = category.replaceFirstChar { it.uppercase() },
-                        color = Color.Red,
-                        style = MaterialTheme.typography.labelMedium,
-                        modifier = Modifier
-                            .background(Color(0xFFFFE0E0), RoundedCornerShape(4.dp))
-                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Title
-                Text(
-                    text = article.title ?: "No Title",
-                    style = MaterialTheme.typography.titleMedium,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Author + Time
-                if (firstAuthor.isNotEmpty()) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = firstAuthor,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = getTimeAgo(article.publishedAt),
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                    }
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recentlyReadViewModel: RecentlyReadViewModel) {
@@ -215,21 +126,7 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recen
             .fillMaxWidth()
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable {
-                article.url?.let { url ->
-                    //Save to recently read
-                    recentlyReadViewModel.addToRecentlyRead(
-                        RecentlyReadArticleEntity(
-                            title = article.title ?: "No Title",
-                            author = article.author,
-                            url = article.url,
-                            urlToImage = article.urlToImage,
-                            publishedAt = article.publishedAt,
-                            category = article.category
-                        )
-                    )
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                }
+                handleArticleClick(context, article, recentlyReadViewModel)
             },
         colors = CardDefaults.cardColors(
             containerColor = CardBackground
@@ -362,6 +259,27 @@ fun RecentlyReadNewsItem(article: RecentlyReadArticleEntity) {
                 }
             }
         }
+    }
+}
+
+fun handleArticleClick(
+    context: Context,
+    article: ArticleEntity,
+    recentlyReadViewModel: RecentlyReadViewModel
+) {
+    article.url?.let { url ->
+        recentlyReadViewModel.addToRecentlyRead(
+            RecentlyReadArticleEntity(
+                title = article.title ?: "No Title",
+                author = article.author,
+                url = article.url,
+                urlToImage = article.urlToImage,
+                publishedAt = article.publishedAt,
+                category = article.category
+            )
+        )
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        context.startActivity(intent)
     }
 }
 
