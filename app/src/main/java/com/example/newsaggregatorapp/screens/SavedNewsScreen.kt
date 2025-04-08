@@ -28,7 +28,7 @@ import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SavedNewsScreen(navController: NavHostController, bookmarkViewModel: BookmarkViewModel = viewModel(), recentlyReadViewModel: RecentlyReadViewModel = viewModel()) {
-    val savedArticles by bookmarkViewModel.bookmarks.collectAsState()
+    val savedArticles by bookmarkViewModel.bookmarkedArticles.collectAsState()
     val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "saved_news"
     MainScaffold(
         navController = navController,

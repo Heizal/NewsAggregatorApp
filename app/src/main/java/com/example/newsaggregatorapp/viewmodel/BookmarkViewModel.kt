@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 class BookmarkViewModel (application: Application) : AndroidViewModel(application) {
     private val repository: BookmarkRepository
 
-    private val _bookmarks = MutableStateFlow<List<ArticleEntity>>(emptyList())
-    val bookmarks: StateFlow<List<ArticleEntity>> = _bookmarks.asStateFlow()
+    private val _bookmarkedArticles = MutableStateFlow<List<ArticleEntity>>(emptyList())
+    val bookmarkedArticles: StateFlow<List<ArticleEntity>> = _bookmarkedArticles.asStateFlow()
 
     init {
         val dao = AppDatabase.getDatabase(application).bookmarkDao()
@@ -32,7 +32,7 @@ class BookmarkViewModel (application: Application) : AndroidViewModel(applicatio
                     println("Error while collecting bookmarks: ${e.message}")
                 }
                 .collect { articles ->
-                _bookmarks.value = articles
+                _bookmarkedArticles.value = articles
             }
         }
     }
@@ -53,6 +53,6 @@ class BookmarkViewModel (application: Application) : AndroidViewModel(applicatio
     }
 
     fun isBookmarked(article: ArticleEntity): Boolean {
-        return _bookmarks.value.any { it.title == article.title }
+        return _bookmarkedArticles.value.any { it.title == article.title }
     }
 }

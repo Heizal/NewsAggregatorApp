@@ -242,7 +242,7 @@ fun getTimeAgo(dateString: String?): String {
 @Composable
 fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recentlyReadViewModel: RecentlyReadViewModel) {
     val context = LocalContext.current
-    val bookmarkedArticles by bookmarkViewModel.bookmarks.collectAsState()
+    val bookmarkedArticles by bookmarkViewModel.bookmarkedArticles.collectAsState()
     val isBookmarked = bookmarkedArticles.any { it.title == article.title }
     val firstAuthor = article.author?.split(",")?.firstOrNull()?.trim() ?: ""
 
