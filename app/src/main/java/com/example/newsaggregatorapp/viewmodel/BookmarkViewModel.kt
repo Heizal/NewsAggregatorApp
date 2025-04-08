@@ -21,13 +21,17 @@ class BookmarkViewModel (application: Application) : AndroidViewModel(applicatio
         val dao = AppDatabase.getDatabase(application).bookmarkDao()
         repository = BookmarkRepository(dao)
 
-        viewModelScope.launch {
-            repository.allBookmarks.collect{ bookmarkedArticles: List<ArticleEntity> ->
-                _bookmarks.value = bookmarkedArticles
+        observeBookmarks()
+    }
 
+    private fun observeBookmarks() {
+        viewModelScope.launch {
+            repository.allBookmarks.collect { articles ->
+                _bookmarks.value = articles
             }
         }
     }
+
 
     //Add bookmark
     fun addBookmark(article: ArticleEntity){
