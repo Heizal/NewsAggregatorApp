@@ -46,7 +46,6 @@ import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModelFactory
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun SearchScreen(
     navController: NavHostController,
     backStackEntry: NavBackStackEntry,

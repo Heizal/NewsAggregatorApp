@@ -112,57 +112,6 @@ fun HomeScreen(
     }
 }
 
-@Composable
-fun RecentlyReadNewsItem(article: RecentlyReadArticleEntity) {
-    val context = LocalContext.current
-
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable {
-                article.url?.let { url ->
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                    context.startActivity(intent)
-                }
-            },
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Image(
-                painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
-                contentDescription = "Article Image",
-                modifier = Modifier
-                    .size(100.dp)
-                    .padding(4.dp),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = article.title ?: "No Title",
-                    style = MaterialTheme.typography.titleSmall,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-
-                val author = article.author?.split(",")?.firstOrNull()?.trim().orEmpty()
-                if (author.isNotEmpty()) {
-                    Text(
-                        text = author,
-                        style = MaterialTheme.typography.bodySmall
-                    )
-                }
-            }
-        }
-    }
-}
-
 fun handleArticleClick(
     context: Context,
     article: ArticleEntity,
@@ -183,6 +132,5 @@ fun handleArticleClick(
         context.startActivity(intent)
     }
 }
-
 
 
