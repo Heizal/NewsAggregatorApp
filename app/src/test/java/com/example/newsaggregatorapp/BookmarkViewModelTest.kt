@@ -56,7 +56,7 @@ class BookmarkViewModelTest {
 
     @Test
     fun `bookmarks emits articles from repository`() = runTest {
-        viewModel.bookmarks.test {
+        viewModel.bookmarkedArticles.test {
             testDispatcher.scheduler.advanceUntilIdle()
             val emission = awaitItem()
             assert(emission.contains(testArticle))
