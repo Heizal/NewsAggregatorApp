@@ -26,16 +26,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val response = apiService.getTopHeadlines(category = category, apiKey = apiKey)
-                _news.value = response.articles.map{
-                    ArticleEntity(
-                        title = it.title ?: "No Title",
-                        author = it.author ?: "Unknown",
-                        publishedAt = it.publishedAt ?: "",
-                        url = it.url,
-                        urlToImage = it.urlToImage,
-                        category = category
-                    )
-                }
+                _news.value = mapToArticleEntities(response.articles, category)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -45,5 +36,18 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     fun setCategory(category: String){
         selectedCategory.value = category
         fetchNews(category)
+    }
+
+    private fun mapToArticleEntities(articles: List<ArticleEntity>, category: String): List<ArticleEntity> {
+        return articles.map {
+            ArticleEntity(
+                title = it.title ?: "No Title",
+                author = it.author ?: "Unknown",
+                publishedAt = it.publishedAt ?: "",
+                url = it.url,
+                urlToImage = it.urlToImage,
+                category = category
+            )
+        }
     }
 }
