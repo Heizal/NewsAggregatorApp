@@ -17,15 +17,23 @@ class RecentlyReadViewModel(application: Application) : AndroidViewModel(applica
     val recentlyRead: StateFlow<List<RecentlyReadArticleEntity>> = _recentlyRead.asStateFlow()
 
     init {
-        val dao = AppDatabase.getDatabase(application).recentlyReadDao()
-        repository = RecentlyReadRepository(dao)
+        repository = createRepository(application)
+        observeRecentlyReadArticles()
+    }
 
+    private fun createRepository(app: Application): RecentlyReadRepository {
+        val dao = AppDatabase.getDatabase(app).recentlyReadDao()
+        return RecentlyReadRepository(dao)
+    }
+
+    private fun observeRecentlyReadArticles() {
         viewModelScope.launch {
             repository.allRecentlyRead.collect { articles ->
                 _recentlyRead.value = articles
             }
         }
     }
+
 
     fun addToRecentlyRead(article: RecentlyReadArticleEntity) {
         viewModelScope.launch {
