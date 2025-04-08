@@ -31,10 +31,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -50,7 +48,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.example.newsaggregatorapp.R
 import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
@@ -63,10 +60,8 @@ import java.time.Duration
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(
     navController: NavHostController,
     viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
@@ -92,7 +87,6 @@ fun HomeScreen(
         Column(
             modifier = Modifier.padding(paddingValues)
         ) {
-            // Show Top 5 Latest Articles in Large Cards
             if (newsState.isNotEmpty()) {
                 LargeNewsItem(newsState.first(), navController, recentlyReadViewModel)
             }
@@ -124,7 +118,6 @@ fun HomeScreen(
                     }
                 }
             }
-            //News List
             LazyColumn {
                 items(newsState.drop(1)) { article ->
                     NewsItem(article, bookmarkViewModel, recentlyReadViewModel)
