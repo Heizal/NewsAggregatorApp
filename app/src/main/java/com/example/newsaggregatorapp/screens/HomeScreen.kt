@@ -52,6 +52,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.newsaggregatorapp.components.CategoryTabs
 import com.example.newsaggregatorapp.components.LargeNewsItem
 import com.example.newsaggregatorapp.components.MainScaffold
+import com.example.newsaggregatorapp.components.NewsItem
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 import com.example.newsaggregatorapp.ui.theme.CardBackground
@@ -108,106 +109,6 @@ fun HomeScreen(
                 }
             }
         }
-    }
-}
-
-
-
-@Composable
-fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recentlyReadViewModel: RecentlyReadViewModel) {
-    val context = LocalContext.current
-    val bookmarkedArticles by bookmarkViewModel.bookmarkedArticles.collectAsState()
-    val isBookmarked = bookmarkedArticles.any { it.title == article.title }
-    val firstAuthor = article.author?.split(",")?.firstOrNull()?.trim() ?: ""
-
-    Card(
-        shape = RoundedCornerShape(16.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .clickable {
-                handleArticleClick(context, article, recentlyReadViewModel)
-            },
-        colors = CardDefaults.cardColors(
-            containerColor = CardBackground
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-    ) {
-        Row (modifier = Modifier
-            .fillMaxWidth()
-            .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Article Image
-        Image(painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
-                contentDescription = "Article Image",
-                modifier = Modifier
-                    .size(80.dp)
-                    .background(Color.LightGray, RoundedCornerShape(12.dp)),
-                contentScale = ContentScale.Crop
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // 📜 Article Details (Title, Author, Date)
-            Column(modifier = Modifier.weight(1f)) {
-                // 📰 Title
-                Text(
-                    text = article.title ?: "No Title",
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Spacer(modifier = Modifier.height(4.dp))
-                // ✍️ Author & 📆 Date
-                Row (
-                    verticalAlignment = Alignment.CenterVertically
-
-                ) {
-                    if (firstAuthor.isNotEmpty()) {
-                        Text(
-                            text = firstAuthor,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = Color.Gray
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-
-                    Text(
-                        text = getTimeAgo(article.publishedAt),
-                        style = MaterialTheme.typography.bodySmall,
-                        color = Color.Gray
-                    )
-                }
-
-            }
-
-            // 🔖 Bookmark Button
-            IconButton(
-                onClick = {
-                    if (isBookmarked) {
-                        bookmarkViewModel.removeBookmark(article)
-                        println("Removing bookmark: ${article.title}")
-                    } else {
-                        bookmarkViewModel.addBookmark(article)
-                        println("Adding bookmark: ${article.title}")
-                    }
-                }
-            ) {
-                Icon(
-                    imageVector = if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                    contentDescription = "Bookmark",
-                    tint = if (isBookmarked) Color.Blue else Color.Gray
-                )
-            }
-        }
-        // ➖ Separator line
-        HorizontalDivider(
-            modifier = Modifier.padding(horizontal = 8.dp),
-            thickness = 1.dp,
-            color = SeparatorColor
-        )
     }
 }
 

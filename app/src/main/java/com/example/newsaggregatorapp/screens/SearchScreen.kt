@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import com.example.newsaggregatorapp.components.MainScaffold
+import com.example.newsaggregatorapp.components.NewsItem
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
