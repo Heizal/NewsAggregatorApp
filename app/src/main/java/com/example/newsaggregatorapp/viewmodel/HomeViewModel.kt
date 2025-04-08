@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
-    private val _news = MutableStateFlow<List<ArticleEntity>>(emptyList())
-    val news: StateFlow<List<ArticleEntity>> = _news
+    private val _articles = MutableStateFlow<List<ArticleEntity>>(emptyList())
+    val articles: StateFlow<List<ArticleEntity>> = _articles
 
     private val apiService = RetrofitInstance.getApiService(application)
     private val apiKey = RetrofitInstance.getApiKey()
@@ -29,7 +29,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             try {
                 val response = apiService.getTopHeadlines(category = category, apiKey = apiKey)
-                _news.value = mapToArticleEntities(response.articles, category)
+                _articles.value = mapToArticleEntities(response.articles, category)
             } catch (e: Exception) {
                 e.printStackTrace()
                 _errorMessage.value = "Failed to fetch news: ${e.message}"

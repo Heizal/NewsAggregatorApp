@@ -70,7 +70,7 @@ class HomeViewModelTest {
         viewModel.fetchNews(testCategory)
         testDispatcher.scheduler.advanceUntilIdle()
 
-        val articles = viewModel.news.value
+        val articles = viewModel.articles.value
         assertEquals(1, articles.size)
         assertEquals(testArticle.title, articles.first().title)
     }
@@ -81,6 +81,6 @@ class HomeViewModelTest {
         testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(testCategory, viewModel.selectedCategory.value)
-        assertEquals(1, viewModel.news.value.size)
+        assertEquals(1, viewModel.articles.value.size)
     }
 }

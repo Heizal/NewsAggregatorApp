@@ -68,7 +68,7 @@ fun HomeScreen(
     bookmarkViewModel: BookmarkViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     recentlyReadViewModel: RecentlyReadViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
-    val newsState by viewModel.news.collectAsState()
+    val newsState by viewModel.articles.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
     val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "home"
 
