@@ -48,8 +48,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsaggregatorapp.R
+import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 import com.example.newsaggregatorapp.ui.theme.CardBackground
@@ -66,32 +68,25 @@ import java.util.Locale
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun HomeScreen(
-    navController: NavController,
+    navController: NavHostController,
     viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     bookmarkViewModel: BookmarkViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     recentlyReadViewModel: RecentlyReadViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
     val newsState by viewModel.news.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
+    val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "home"
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("News Aggregator") },
-                actions = {
-                    // 🔍 Search Icon - Navigates to `SearchScreen`
-                    IconButton(onClick = { navController.navigate("search") }) {
-                        Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-                    }
-                }
-            )
-        },
-        bottomBar = {
-            val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "home"
-
-            CustomBottomBar(navController = navController, selectedRoute = currentRoute)
+    MainScaffold(
+        navController = navController,
+        currentRoute = currentRoute,
+        title = "News Aggregator",
+        showBackButton = false,
+        actions = {
+            IconButton(onClick = { navController.navigate("search") }) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
+            }
         }
-
     )
     { paddingValues ->
         Column(

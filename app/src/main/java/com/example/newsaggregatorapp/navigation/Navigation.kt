@@ -19,6 +19,7 @@ sealed class Screen(val route: String) {
 
 @Composable
 fun AppNavigation(navController: NavHostController){
+
     NavHost(navController, startDestination = Screen.Home.route){
         composable(Screen.Home.route){ HomeScreen(navController) }
         composable(Screen.Search.route) { backStackEntry ->

@@ -37,7 +37,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
+import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
@@ -45,7 +47,7 @@ import com.example.newsaggregatorapp.viewmodel.SearchViewModelFactory
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun SearchScreen(
-    navController: NavController,
+    navController: NavHostController,
     backStackEntry: NavBackStackEntry,
     bookmarkViewModel: BookmarkViewModel = viewModel(),
     recentlyReadViewModel: RecentlyReadViewModel = viewModel()
@@ -65,18 +67,12 @@ fun SearchScreen(
     val searchResults by searchViewModel.searchResults.collectAsState()
     val recentSearches by searchViewModel.recentSearches.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
+    val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "search"
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Search News") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
+    MainScaffold(
+        navController = navController,
+        currentRoute = currentRoute,
+        title = "Saved News"
     ) { paddingValues ->
         Column(
             modifier = Modifier

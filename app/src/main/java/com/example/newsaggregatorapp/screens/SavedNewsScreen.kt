@@ -20,25 +20,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SavedNewsScreen(navController: NavController, bookmarkViewModel: BookmarkViewModel = viewModel(), recentlyReadViewModel: RecentlyReadViewModel = viewModel()) {
+fun SavedNewsScreen(navController: NavHostController, bookmarkViewModel: BookmarkViewModel = viewModel(), recentlyReadViewModel: RecentlyReadViewModel = viewModel()) {
     val savedArticles by bookmarkViewModel.bookmarks.collectAsState()
-
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Saved News") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
+    val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "saved_news"
+    MainScaffold(
+        navController = navController,
+        currentRoute = currentRoute,
+        title = "Saved News"
     ) { paddingValues ->
         Column(
             modifier = Modifier

@@ -20,29 +20,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun RecentlyReadArticlesScreen(
-    navController: NavController,
+    navController: NavHostController,
     recentlyReadViewModel: RecentlyReadViewModel = viewModel(),
     bookmarkViewModel: BookmarkViewModel = viewModel()
 ) {
     val recentlyReadArticles by recentlyReadViewModel.recentlyRead.collectAsState()
+    val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "recently_read"
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Recently Read") },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                    }
-                }
-            )
-        }
+    MainScaffold(
+        navController = navController,
+        currentRoute = currentRoute,
+        title = "Recently Read"
     ) { paddingValues ->
         Column(
             modifier = Modifier
