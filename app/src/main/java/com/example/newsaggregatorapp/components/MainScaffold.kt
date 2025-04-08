@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
-import com.example.newsaggregatorapp.screens.CustomBottomBar
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
