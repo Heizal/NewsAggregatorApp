@@ -42,7 +42,14 @@ class RecentlyReadViewModel(application: Application) : AndroidViewModel(applica
 
     fun addToRecentlyRead(article: RecentlyReadArticleEntity) {
         viewModelScope.launch {
-            repository.addToRecentlyRead(article)
+            if (!isArticleAlreadySaved(article)){
+                repository.addToRecentlyRead(article)
+            }
         }
     }
+    private fun isArticleAlreadySaved(article: RecentlyReadArticleEntity): Boolean {
+        return _recentlyRead.value.any { it.title == article.title }
+    }
+
+
 }
