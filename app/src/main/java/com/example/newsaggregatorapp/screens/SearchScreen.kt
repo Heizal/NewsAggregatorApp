@@ -51,13 +51,13 @@ fun SearchScreen(
 
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
     val searchResults by searchViewModel.searchResults.collectAsState()
-    val recentSearches by searchViewModel.recentSearches.collectAsState()
+    val recentSearches by searchViewModel.recentSearches.collectAsState(emptyList())
     val currentRoute = navController.currentBackStackEntry?.destination?.route ?: "search"
 
     MainScaffold(
         navController = navController,
         currentRoute = currentRoute,
-        title = "Saved News"
+        title = "Search News"
     ) { paddingValues ->
         Column(
             modifier = Modifier

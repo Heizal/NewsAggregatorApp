@@ -37,3 +37,10 @@ data class RecentlyReadArticleEntity(
     val publishedAt: String?,
     val category: String?
 )
+
+@Entity(tableName = "recent_searches")
+data class RecentSearchEntity(
+    @PrimaryKey val query: String,
+    val timestamp: Long = System.currentTimeMillis()
+)
+

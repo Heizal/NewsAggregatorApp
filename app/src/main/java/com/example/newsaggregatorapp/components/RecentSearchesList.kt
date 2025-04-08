@@ -10,27 +10,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.newsaggregatorapp.models.RecentSearchEntity
 
 @Composable
 fun RecentSearchesList(
-    recentSearches: List<String>,
+    recentSearches: List<RecentSearchEntity>,
     onSearchClick: (String) -> Unit
-){
+) {
     if (recentSearches.isNotEmpty()) {
         Text("Recent Searches", style = MaterialTheme.typography.titleMedium)
         LazyColumn {
-            items(recentSearches) { query ->
+            items(recentSearches) { search ->
+                val query = search.query
                 Text(
                     text = query,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable {
-                            onSearchClick(query)
-                        }
+                        .clickable { onSearchClick(query) }
                         .padding(8.dp)
                 )
             }
         }
     }
-
 }
