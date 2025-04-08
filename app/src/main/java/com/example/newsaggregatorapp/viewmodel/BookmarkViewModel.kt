@@ -9,6 +9,7 @@ import com.example.newsaggregatorapp.repository.BookmarkRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class BookmarkViewModel (application: Application) : AndroidViewModel(application) {
@@ -26,7 +27,11 @@ class BookmarkViewModel (application: Application) : AndroidViewModel(applicatio
 
     private fun observeBookmarks() {
         viewModelScope.launch {
-            repository.allBookmarks.collect { articles ->
+            repository.allBookmarks
+                .catch { e ->
+                    println("Error while collecting bookmarks: ${e.message}")
+                }
+                .collect { articles ->
                 _bookmarks.value = articles
             }
         }
