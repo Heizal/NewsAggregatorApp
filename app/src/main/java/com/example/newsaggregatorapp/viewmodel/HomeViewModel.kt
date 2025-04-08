@@ -16,6 +16,9 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val apiService = RetrofitInstance.getApiService(application)
     private val apiKey = RetrofitInstance.getApiKey()
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
     var selectedCategory = MutableStateFlow("general")
 
     init {
@@ -29,6 +32,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
                 _news.value = mapToArticleEntities(response.articles, category)
             } catch (e: Exception) {
                 e.printStackTrace()
+                _errorMessage.value = "Failed to fetch news: ${e.message}"
             }
         }
    }
