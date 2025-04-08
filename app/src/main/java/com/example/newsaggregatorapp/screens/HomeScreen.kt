@@ -112,25 +112,4 @@ fun HomeScreen(
     }
 }
 
-fun handleArticleClick(
-    context: Context,
-    article: ArticleEntity,
-    recentlyReadViewModel: RecentlyReadViewModel
-) {
-    article.url?.let { url ->
-        recentlyReadViewModel.addToRecentlyRead(
-            RecentlyReadArticleEntity(
-                title = article.title ?: "No Title",
-                author = article.author,
-                url = article.url,
-                urlToImage = article.urlToImage,
-                publishedAt = article.publishedAt,
-                category = article.category
-            )
-        )
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-        context.startActivity(intent)
-    }
-}
-
 

@@ -34,8 +34,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.example.newsaggregatorapp.helpers.handleArticleClick
 import com.example.newsaggregatorapp.models.ArticleEntity
-import com.example.newsaggregatorapp.screens.handleArticleClick
 import com.example.newsaggregatorapp.ui.theme.CardBackground
 import com.example.newsaggregatorapp.ui.theme.SeparatorColor
 import com.example.newsaggregatorapp.util.getTimeAgo
