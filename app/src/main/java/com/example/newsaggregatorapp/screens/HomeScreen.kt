@@ -53,6 +53,7 @@ import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 import com.example.newsaggregatorapp.ui.theme.CardBackground
 import com.example.newsaggregatorapp.ui.theme.SeparatorColor
+import com.example.newsaggregatorapp.util.getTimeAgo
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.HomeViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
@@ -217,25 +218,6 @@ fun LargeNewsItem(article: ArticleEntity, navController: NavController, recently
                 }
             }
         }
-    }
-}
-
-// 📆 Helper Function to Convert Date to "X minutes/hours ago"
-fun getTimeAgo(dateString: String?): String {
-    if (dateString.isNullOrEmpty()) return "Unknown time"
-
-    val formatter = DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of("UTC"))
-    val time = ZonedDateTime.parse(dateString, formatter)
-    val now = ZonedDateTime.now(ZoneId.of("UTC"))
-
-    val diff = Duration.between(time, now)
-
-    return when {
-        diff.toMinutes() < 1 -> "Just now"
-        diff.toMinutes() < 60 -> "${diff.toMinutes()} minutes ago"
-        diff.toHours() < 24 -> "${diff.toHours()} hours ago"
-        diff.toDays() < 7 -> "${diff.toDays()} days ago"
-        else -> "${diff.toDays() / 7} weeks ago"
     }
 }
 
