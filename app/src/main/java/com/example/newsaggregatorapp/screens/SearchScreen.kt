@@ -39,6 +39,7 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
+import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
 import com.example.newsaggregatorapp.viewmodel.SearchViewModelFactory
 @Composable
@@ -46,7 +47,8 @@ import com.example.newsaggregatorapp.viewmodel.SearchViewModelFactory
 fun SearchScreen(
     navController: NavController,
     backStackEntry: NavBackStackEntry,
-    bookmarkViewModel: BookmarkViewModel = viewModel()
+    bookmarkViewModel: BookmarkViewModel = viewModel(),
+    recentlyReadViewModel: RecentlyReadViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val factory = SearchViewModelFactory(
@@ -137,7 +139,11 @@ fun SearchScreen(
                 Text("Search Results", style = MaterialTheme.typography.titleMedium)
                 LazyColumn {
                     items(searchResults) { article ->
-                        NewsItem(article, bookmarkViewModel)
+                        NewsItem(
+                            article = article,
+                            bookmarkViewModel = bookmarkViewModel,
+                            recentlyReadViewModel = recentlyReadViewModel
+                        )
                     }
                 }
             }

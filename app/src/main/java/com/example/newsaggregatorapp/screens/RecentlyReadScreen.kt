@@ -25,16 +25,20 @@ import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun SavedNewsScreen(navController: NavController, bookmarkViewModel: BookmarkViewModel = viewModel(), recentlyReadViewModel: RecentlyReadViewModel = viewModel()) {
-    val savedArticles by bookmarkViewModel.bookmarks.collectAsState()
+fun RecentlyReadArticlesScreen(
+    navController: NavController,
+    recentlyReadViewModel: RecentlyReadViewModel = viewModel(),
+    bookmarkViewModel: BookmarkViewModel = viewModel()
+) {
+    val recentlyReadArticles by recentlyReadViewModel.recentlyRead.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Saved News") },
+                title = { Text("Recently Read") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 }
             )
@@ -45,17 +49,12 @@ fun SavedNewsScreen(navController: NavController, bookmarkViewModel: BookmarkVie
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            println("Saved Articles Count: ${savedArticles.size}")
-            if (savedArticles.isEmpty()) {
-                Text("No saved articles.", style = MaterialTheme.typography.bodyLarge)
+            if (recentlyReadArticles.isEmpty()) {
+                Text("No recently read articles.", style = MaterialTheme.typography.bodyLarge)
             } else {
                 LazyColumn {
-                    items(savedArticles) { article ->
-                        NewsItem(
-                            article = article,
-                            bookmarkViewModel = bookmarkViewModel,
-                            recentlyReadViewModel = recentlyReadViewModel
-                        )
+                    items(recentlyReadArticles) { article ->
+                        RecentlyReadNewsItem(article)
                     }
                 }
             }

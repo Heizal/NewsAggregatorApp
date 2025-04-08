@@ -36,14 +36,4 @@ data class RecentlyReadArticleEntity(
     val urlToImage: String?,
     val publishedAt: String?,
     val category: String?
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is RecentlyReadArticleEntity) return false
-        return title == other.title
-    }
-
-    override fun hashCode(): Int {
-        return title.hashCode()
-    }
-}
+)

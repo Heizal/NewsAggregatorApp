@@ -22,10 +22,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.BookmarkBorder
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,7 +44,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -54,10 +51,12 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsaggregatorapp.R
 import com.example.newsaggregatorapp.models.ArticleEntity
+import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 import com.example.newsaggregatorapp.ui.theme.CardBackground
 import com.example.newsaggregatorapp.ui.theme.SeparatorColor
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.HomeViewModel
+import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 import java.time.Duration
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -66,7 +65,12 @@ import java.util.Locale
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(), bookmarkViewModel: BookmarkViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: HomeViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    bookmarkViewModel: BookmarkViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    recentlyReadViewModel: RecentlyReadViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+) {
     val newsState by viewModel.news.collectAsState()
     val selectedCategory by viewModel.selectedCategory.collectAsState()
 
@@ -95,7 +99,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
         ) {
             // Show Top 5 Latest Articles in Large Cards
             if (newsState.isNotEmpty()) {
-                LargeNewsItem(newsState.first(), navController)
+                LargeNewsItem(newsState.first(), navController, recentlyReadViewModel)
             }
 
             val categories = listOf("general", "business", "entertainment", "health", "science", "sports", "technology")
@@ -128,7 +132,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
             //News List
             LazyColumn {
                 items(newsState.drop(1)) { article ->
-                    NewsItem(article, bookmarkViewModel)
+                    NewsItem(article, bookmarkViewModel, recentlyReadViewModel)
                 }
             }
         }
@@ -136,7 +140,7 @@ fun HomeScreen(navController: NavController, viewModel: HomeViewModel = androidx
 }
 
 @Composable
-fun LargeNewsItem(article: ArticleEntity, navController: NavController) {
+fun LargeNewsItem(article: ArticleEntity, navController: NavController, recentlyReadViewModel: RecentlyReadViewModel) {
     val context = LocalContext.current
     val firstAuthor = article.author?.split(",")?.firstOrNull()?.trim() ?: ""
 
@@ -148,6 +152,17 @@ fun LargeNewsItem(article: ArticleEntity, navController: NavController) {
             .padding(horizontal = 12.dp, vertical = 8.dp)
             .clickable {
                 article.url?.let { url ->
+                    //Save to recently read
+                    recentlyReadViewModel.addToRecentlyRead(
+                        RecentlyReadArticleEntity(
+                            title = article.title ?: "No Title",
+                            author = article.author,
+                            url = article.url,
+                            urlToImage = article.urlToImage,
+                            publishedAt = article.publishedAt,
+                            category = article.category
+                        )
+                    )
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 }
@@ -237,7 +252,7 @@ fun getTimeAgo(dateString: String?): String {
 }
 
 @Composable
-fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
+fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recentlyReadViewModel: RecentlyReadViewModel) {
     val context = LocalContext.current
     val bookmarkedArticles by bookmarkViewModel.bookmarks.collectAsState()
     val isBookmarked = bookmarkedArticles.any { it.title == article.title }
@@ -250,6 +265,17 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
             .padding(horizontal = 8.dp, vertical = 4.dp)
             .clickable {
                 article.url?.let { url ->
+                    //Save to recently read
+                    recentlyReadViewModel.addToRecentlyRead(
+                        RecentlyReadArticleEntity(
+                            title = article.title ?: "No Title",
+                            author = article.author,
+                            url = article.url,
+                            urlToImage = article.urlToImage,
+                            publishedAt = article.publishedAt,
+                            category = article.category
+                        )
+                    )
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                     context.startActivity(intent)
                 }
@@ -336,4 +362,57 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel) {
         )
     }
 }
+
+@Composable
+fun RecentlyReadNewsItem(article: RecentlyReadArticleEntity) {
+    val context = LocalContext.current
+
+    Card(
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clickable {
+                article.url?.let { url ->
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(intent)
+                }
+            },
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
+                contentDescription = "Article Image",
+                modifier = Modifier
+                    .size(100.dp)
+                    .padding(4.dp),
+                contentScale = ContentScale.Crop
+            )
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = article.title ?: "No Title",
+                    style = MaterialTheme.typography.titleSmall,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                val author = article.author?.split(",")?.firstOrNull()?.trim().orEmpty()
+                if (author.isNotEmpty()) {
+                    Text(
+                        text = author,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
+            }
+        }
+    }
+}
+
+
 

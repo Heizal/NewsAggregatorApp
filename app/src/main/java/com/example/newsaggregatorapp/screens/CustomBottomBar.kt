@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -34,7 +35,8 @@ fun CustomBottomBar(
 ) {
     val items = listOf(
         BottomNavItem("Home", Icons.Filled.Home, "home"),
-        BottomNavItem("Saved", Icons.Filled.Bookmark, "saved_news")
+        BottomNavItem("Saved", Icons.Filled.Bookmark, "saved_news"),
+        BottomNavItem("Recently Read", Icons.Filled.Circle, "recently_read")
     )
 
     Card(
