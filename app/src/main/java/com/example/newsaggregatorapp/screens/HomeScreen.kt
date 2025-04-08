@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
+import com.example.newsaggregatorapp.components.CategoryTabs
 import com.example.newsaggregatorapp.components.MainScaffold
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
@@ -94,31 +95,11 @@ fun HomeScreen(
 
             val categories = listOf("general", "business", "entertainment", "health", "science", "sports", "technology")
 
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 12.dp),
-                contentPadding = PaddingValues(horizontal = 12.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(categories) { category ->
-                    val isSelected = category.lowercase() == selectedCategory.lowercase()
-                    Surface(
-                        shape = RoundedCornerShape(20.dp),
-                        color = if (isSelected) Color.Red else Color.LightGray,
-                        modifier = Modifier.clickable { viewModel.setCategory(category.lowercase()) }
-                    ) {
-                        Text(
-                            text = category.replaceFirstChar { it.uppercase() },
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            color = Color.White,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-
-                    }
-                }
-            }
+            CategoryTabs(
+                categories = categories,
+                selectedCategory = selectedCategory,
+                onCategorySelected = { viewModel.setCategory(it) }
+            )
             LazyColumn {
                 items(newsState.drop(1)) { article ->
                     NewsItem(article, bookmarkViewModel, recentlyReadViewModel)
