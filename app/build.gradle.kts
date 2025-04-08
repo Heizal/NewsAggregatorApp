@@ -59,6 +59,7 @@ android {
 
 dependencies {
 
+    implementation("androidx.test:core-ktx:1.6.1")
     val room_version = "2.6.1"
 
     implementation("androidx.core:core-ktx:1.15.0")

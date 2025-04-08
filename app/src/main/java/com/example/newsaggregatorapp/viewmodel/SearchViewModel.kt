@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.example.newsaggregatorapp.api.NewsApiService
 import com.example.newsaggregatorapp.database.AppDatabase
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.repository.RecentSearchRepository
@@ -12,18 +13,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SearchViewModel(application: Application, private val savedStateHandle: SavedStateHandle) : AndroidViewModel(application) {
+class SearchViewModel(
+    application: Application,
+    private val savedStateHandle: SavedStateHandle,
+    private val recentSearchRepo: RecentSearchRepository = RecentSearchRepository(
+        AppDatabase.getDatabase(application).recentSearchDao()
+    ),
+    private val apiService: NewsApiService = RetrofitInstance.getApiService(application),
+    private val apiKey: String = RetrofitInstance.getApiKey()
+) : AndroidViewModel(application) {
 
-
-    private val db = AppDatabase.getDatabase(application)
-    private val recentSearchRepo = RecentSearchRepository(db.recentSearchDao())
     val recentSearches = recentSearchRepo.recentSearches
 
     private val _searchResults = MutableStateFlow<List<ArticleEntity>>(savedStateHandle["searchResults"] ?: emptyList())
     val searchResults: StateFlow<List<ArticleEntity>> = _searchResults
-
-    private val apiService = RetrofitInstance.getApiService(application)
-    private val apiKey = RetrofitInstance.getApiKey()
 
     //Fetch news based on user query
     fun searchNews(query: String) {
