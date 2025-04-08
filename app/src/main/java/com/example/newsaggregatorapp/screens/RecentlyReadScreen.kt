@@ -22,11 +22,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.newsaggregatorapp.components.MainScaffold
+import com.example.newsaggregatorapp.models.toArticleEntity
 import com.example.newsaggregatorapp.viewmodel.BookmarkViewModel
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 fun RecentlyReadArticlesScreen(
     navController: NavHostController,
     recentlyReadViewModel: RecentlyReadViewModel = viewModel(),
@@ -50,7 +50,11 @@ fun RecentlyReadArticlesScreen(
             } else {
                 LazyColumn {
                     items(recentlyReadArticles) { article ->
-                        RecentlyReadNewsItem(article)
+                        NewsItem(
+                            article = article.toArticleEntity(),
+                            bookmarkViewModel = bookmarkViewModel,
+                            recentlyReadViewModel = recentlyReadViewModel
+                        )
                     }
                 }
             }
