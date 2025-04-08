@@ -83,10 +83,4 @@ class HomeViewModelTest {
         assertEquals(testCategory, viewModel.selectedCategory.value)
         assertEquals(1, viewModel.news.value.size)
     }
-
-
-
-
-
-
 }
