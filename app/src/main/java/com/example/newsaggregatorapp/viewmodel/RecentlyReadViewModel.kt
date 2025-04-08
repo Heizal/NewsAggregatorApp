@@ -9,6 +9,7 @@ import com.example.newsaggregatorapp.repository.RecentlyReadRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 
 class RecentlyReadViewModel(application: Application) : AndroidViewModel(application) {
@@ -28,7 +29,11 @@ class RecentlyReadViewModel(application: Application) : AndroidViewModel(applica
 
     private fun observeRecentlyReadArticles() {
         viewModelScope.launch {
-            repository.allRecentlyRead.collect { articles ->
+            repository.allRecentlyRead
+                .catch { e ->
+                    println("Error while collecting recently read articles: ${e.message}")
+                }
+                .collect { articles ->
                 _recentlyRead.value = articles
             }
         }
