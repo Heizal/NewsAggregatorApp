@@ -2,12 +2,10 @@ package com.example.newsaggregatorapp
 
 import android.app.Application
 import androidx.lifecycle.SavedStateHandle
-import androidx.test.core.app.ApplicationProvider
 import com.example.newsaggregatorapp.api.NewsApiService
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.NewsResponse
 import com.example.newsaggregatorapp.repository.RecentSearchRepository
-import com.example.newsaggregatorapp.service.RetrofitInstance
 import com.example.newsaggregatorapp.viewmodel.SearchViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -75,10 +73,10 @@ class SearchViewModelTest {
         viewModel.searchNews(query)
         advanceUntilIdle()
 
-        // ✅ Then: searchResults should contain the expected articles
+        // Then: searchResults should contain the expected articles
         assertEquals(expectedArticles, viewModel.searchResults.value)
 
-        // ✅ And: recent search should be saved
+        // And: recent search should be saved
         coVerify { repository.addSearch(query) }
     }
 }
