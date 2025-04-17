@@ -49,12 +49,11 @@ fun LargeNewsItem(article: ArticleEntity, navController: NavController, recently
                 handleArticleClick(context, article, recentlyReadViewModel)
             },
         colors = CardDefaults.cardColors(
-            containerColor = CardBackground // 👈 White background
+            containerColor = CardBackground
         ),
         elevation = CardDefaults.cardElevation(6.dp)
     ) {
         Row(modifier = Modifier.padding(12.dp)) {
-            // 🖼️ Left-aligned image (square thumbnail style)
             Image(
                 painter = rememberAsyncImagePainter(model = article.urlToImage ?: ""),
                 contentDescription = "News Image",
@@ -66,9 +65,7 @@ fun LargeNewsItem(article: ArticleEntity, navController: NavController, recently
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // 📰 Content Column
             Column(modifier = Modifier.weight(1f)) {
-                // 🔥 Category
                 article.category?.let { category ->
                     Text(
                         text = category.replaceFirstChar { it.uppercase() },
@@ -82,9 +79,8 @@ fun LargeNewsItem(article: ArticleEntity, navController: NavController, recently
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Title
                 Text(
-                    text = article.title ?: "No Title",
+                    text = article.title,
                     style = MaterialTheme.typography.titleMedium,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
@@ -92,7 +88,6 @@ fun LargeNewsItem(article: ArticleEntity, navController: NavController, recently
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                // Author + Time
                 if (firstAuthor.isNotEmpty()) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(

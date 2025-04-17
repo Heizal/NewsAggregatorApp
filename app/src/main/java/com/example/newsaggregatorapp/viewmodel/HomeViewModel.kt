@@ -17,7 +17,6 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val apiKey = RetrofitInstance.getApiKey()
 
     private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
 
     var selectedCategory = MutableStateFlow("general")
 
@@ -45,7 +44,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private fun mapToArticleEntities(articles: List<ArticleEntity>, category: String): List<ArticleEntity> {
         return articles.map {
             ArticleEntity(
-                title = it.title ?: "No Title",
+                title = it.title,
                 author = it.author ?: "Unknown",
                 publishedAt = it.publishedAt ?: "",
                 url = it.url,

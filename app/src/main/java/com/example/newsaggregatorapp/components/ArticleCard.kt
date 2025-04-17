@@ -78,18 +78,15 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recen
 
             Spacer(modifier = Modifier.width(12.dp))
 
-            // 📜 Article Details (Title, Author, Date)
             Column(modifier = Modifier.weight(1f)) {
-                // 📰 Title
                 Text(
-                    text = article.title ?: "No Title",
+                    text = article.title,
                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
-                // ✍️ Author & 📆 Date
                 Row (
                     verticalAlignment = Alignment.CenterVertically
 
@@ -112,7 +109,6 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recen
 
             }
 
-            // 🔖 Bookmark Button
             IconButton(
                 onClick = {
                     if (isBookmarked) {
@@ -131,7 +127,6 @@ fun NewsItem(article: ArticleEntity, bookmarkViewModel: BookmarkViewModel, recen
                 )
             }
         }
-        // ➖ Separator line
         HorizontalDivider(
             modifier = Modifier.padding(horizontal = 8.dp),
             thickness = 1.dp,

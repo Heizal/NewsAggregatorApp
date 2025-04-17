@@ -1,7 +1,6 @@
 package com.example.newsaggregatorapp.components
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -24,6 +23,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import coil.compose.rememberAsyncImagePainter
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 
@@ -38,7 +38,7 @@ fun RecentlyReadNewsItem(article: RecentlyReadArticleEntity) {
             .padding(8.dp)
             .clickable {
                 article.url?.let { url ->
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    val intent = Intent(Intent.ACTION_VIEW, url.toUri())
                     context.startActivity(intent)
                 }
             },
@@ -58,7 +58,7 @@ fun RecentlyReadNewsItem(article: RecentlyReadArticleEntity) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = article.title ?: "No Title",
+                    text = article.title,
                     style = MaterialTheme.typography.titleSmall,
                     maxLines = 3,
                     overflow = TextOverflow.Ellipsis

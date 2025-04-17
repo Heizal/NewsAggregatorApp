@@ -37,15 +37,12 @@ class BookmarkViewModel (application: Application) : AndroidViewModel(applicatio
         }
     }
 
-
-    //Add bookmark
     fun addBookmark(article: ArticleEntity){
         viewModelScope.launch {
             repository.addBookmark(article)
         }
     }
 
-    //Remove bookmark
     fun removeBookmark(article: ArticleEntity){
         viewModelScope.launch {
             repository.removeBookmark(article)

@@ -2,7 +2,7 @@ package com.example.newsaggregatorapp.helpers
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.RecentlyReadArticleEntity
 import com.example.newsaggregatorapp.viewmodel.RecentlyReadViewModel
@@ -15,7 +15,7 @@ fun handleArticleClick(
     article.url?.let { url ->
         recentlyReadViewModel.addToRecentlyRead(
             RecentlyReadArticleEntity(
-                title = article.title ?: "No Title",
+                title = article.title,
                 author = article.author,
                 url = article.url,
                 urlToImage = article.urlToImage,
@@ -23,7 +23,7 @@ fun handleArticleClick(
                 category = article.category
             )
         )
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
         context.startActivity(intent)
     }
 }

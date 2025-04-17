@@ -39,7 +39,6 @@ class RecentlyReadViewModel(application: Application) : AndroidViewModel(applica
         }
     }
 
-
     fun addToRecentlyRead(article: RecentlyReadArticleEntity) {
         viewModelScope.launch {
             if (!isArticleAlreadySaved(article)){
