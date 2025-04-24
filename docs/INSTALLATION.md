@@ -2,8 +2,6 @@
 
 Welcome to the News Aggregator App! Follow these steps to set up the project on your local machine and get it running smoothly.
 
----
-
 ## 📋 Prerequisites
 
 Before you begin, ensure you have the following tools installed:
@@ -13,15 +11,12 @@ Before you begin, ensure you have the following tools installed:
 - **Gradle (comes bundled with Android Studio)**
 - **Git**
 
----
-
 ## 📦 Clone the Repository
 
 ```bash
 git clone https://github.com/yourusername/news-aggregator-app.git
 cd news-aggregator-app
 ```
----
 
 ## ⚙️ Open the Project
 1. Open Android Studio.
