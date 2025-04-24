@@ -1,12 +1,15 @@
 package com.example.newsaggregatorapp.models
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.parcelize.Parcelize
 
 data class NewsResponse(
     val articles: List<ArticleEntity>
 )
 
+@Parcelize
 @Entity(tableName = "bookmarked_articles")
 data class ArticleEntity(
     @PrimaryKey val title: String,
@@ -15,17 +18,7 @@ data class ArticleEntity(
     val urlToImage: String?,
     val publishedAt: String?,
     val category: String?
-) {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is ArticleEntity) return false
-            return title == other.title
-        }
-
-        override fun hashCode(): Int {
-            return title.hashCode()
-        }
-}
+) : Parcelable
 
 @Entity(tableName = "recently_read_articles")
 data class RecentlyReadArticleEntity(
