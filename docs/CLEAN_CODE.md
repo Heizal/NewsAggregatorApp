@@ -21,8 +21,6 @@ This document outlines the **clean code principles**, **refactoring process**, a
 | **Composition Over Inheritance** | Screens and components are composed rather than extended. | `MainScaffold`, `NewsItem`, and `LargeNewsItem` are composed in `HomeScreen`. |
 
 
----
-
 ## Refactoring Workflow
 
 Refactoring was done **iteratively**, following the safe and test-driven approach from *Fowler's Refactoring* and *Clean Code*:
