@@ -1,7 +1,6 @@
-package com.example.newsaggregatorapp.service
+package com.example.newsaggregatorapp.api
 
 import android.content.Context
-import com.example.newsaggregatorapp.api.NewsApiService
 import java.util.Properties
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

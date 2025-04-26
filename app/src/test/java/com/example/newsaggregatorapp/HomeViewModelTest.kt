@@ -3,7 +3,7 @@ package com.example.newsaggregatorapp
 import com.example.newsaggregatorapp.api.NewsApiService
 import com.example.newsaggregatorapp.models.ArticleEntity
 import com.example.newsaggregatorapp.models.NewsResponse
-import com.example.newsaggregatorapp.service.RetrofitInstance
+import com.example.newsaggregatorapp.api.RetrofitInstance
 import com.example.newsaggregatorapp.viewmodel.HomeViewModel
 import io.mockk.coEvery
 import io.mockk.every

@@ -11,10 +11,10 @@ import com.example.newsaggregatorapp.screens.SearchScreen
 
 
 sealed class Screen(val route: String) {
-    object Home : Screen("home")
-    object Search : Screen("search")
-    object SavedNews : Screen("saved_news")
-    object RecentlyRead : Screen("recently_read")
+    data object Home : Screen("home")
+    data object Search : Screen("search")
+    data object SavedNews : Screen("saved_news")
+    data object RecentlyRead : Screen("recently_read")
 }
 
 @Composable
