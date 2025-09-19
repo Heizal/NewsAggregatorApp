@@ -2,6 +2,8 @@
 
 **NewsAggregatorApp** is an Android application that aggregates news articles from various sources, providing users with a centralized hub to stay updated on current events.
 
+## Demo
+[Watch the demo](https://drive.google.com/file/d/1cQQZUP5U75UdINNIaG9EizespfZuPYki/view?usp=sharing)
 ## Features
 
 *   **News Article Display:** Fetches and displays news articles in a user-friendly format.
